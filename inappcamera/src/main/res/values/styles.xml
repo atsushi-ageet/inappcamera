@@ -1,0 +1,17 @@
+<resources>
+    <style name="InAppCameraTheme.Camera" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="InAppCameraTheme.Preview" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="InAppCamera_CircleButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@drawable/inappcamera_circle_button</item>
+    </style>
+    <style name="InAppCamera_CircleButton.Capture">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+</resources>

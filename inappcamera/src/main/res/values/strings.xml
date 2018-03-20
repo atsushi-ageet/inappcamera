@@ -1,0 +1,7 @@
+<resources>
+    <string name="inappcamera_camera_activity_label">In App Camera</string>
+    <string name="inappcamera_processing">Processing…</string>
+    <string name="inappcamera_capture">Capture</string>
+    <string name="inappcamera_ok">Done</string>
+    <string name="inappcamera_delete">Delete</string>
+</resources>
