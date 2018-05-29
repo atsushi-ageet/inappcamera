@@ -2,7 +2,6 @@ package com.ageet.inappcamera;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -29,10 +29,9 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
 
     private boolean isRetaining = false;
     private byte[] jpeg = null;
-    private Uri outputUri = null;
-    private boolean skipPreview = false;
     private ProgressDialogFragment progress = null;
     private CameraView cameraView = null;
+    private InAppCameraOptions options;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,15 +40,13 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.inappcamera_activity_camera);
 
-        Intent intent = getIntent();
-        outputUri = intent != null ? intent.<Uri>getParcelableExtra(InAppCamera.EXTRA_OUTPUT) : null;
-        if (outputUri == null) {
-            InAppCamera.log(LOG_TAG, "outputUri is null");
-            cancel();
-            return;
-        }
-        skipPreview = intent.getBooleanExtra(InAppCamera.EXTRA_SKIP_PREVIEW, false);
+        options = getIntent().getParcelableExtra(InAppCamera.EXTRA_OPTIONS);
         cameraView = findViewById(R.id.cameraView);
+        if (options.getCameraOverlayViewLayoutId() != View.NO_ID) {
+            ViewStub cameraOverlayViewStub = findViewById(R.id.cameraOverlayViewStub);
+            cameraOverlayViewStub.setLayoutResource(options.getCameraOverlayViewLayoutId());
+            cameraOverlayViewStub.inflate();
+        }
 
         byte[] jpeg = restoreJpeg();
         if (getSupportLoaderManager().getLoader(0) != null || jpeg != null) {
@@ -118,7 +115,7 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
         if (args != null) {
             data = args.getByteArray("data");
         }
-        return new SaveImageTaskLoader(this, data, outputUri);
+        return new SaveImageTaskLoader(this, data, options.getOutputUri());
     }
 
     @Override
@@ -127,7 +124,7 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
         if (progress != null) {
             progress.dismiss();
         }
-        if (skipPreview) {
+        if (options.isSkipPreview()) {
             ok();
         } else {
             preview();
@@ -155,20 +152,15 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
 
     private void preview() {
         Intent intent = new Intent(this, PreviewActivity.class)
-                .putExtra(InAppCamera.EXTRA_OUTPUT, outputUri);
+                .putExtra(InAppCamera.EXTRA_OPTIONS, options);
         startActivityForResult(intent, 0);
         getSupportLoaderManager().destroyLoader(0);
     }
 
     private void ok() {
         Intent intent = new Intent()
-                .putExtra(InAppCamera.EXTRA_OUTPUT, outputUri);
+                .putExtra(InAppCamera.EXTRA_OUTPUT, options.getOutputUri());
         setResult(Activity.RESULT_OK, intent);
-        finish();
-    }
-
-    private void cancel() {
-        setResult(Activity.RESULT_CANCELED);
         finish();
     }
 }

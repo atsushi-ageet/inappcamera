@@ -21,14 +21,14 @@ public class InAppCamera {
 
     @NonNull
     public static Intent createIntent(@NonNull Context context, @NonNull Uri outputUri) {
-        return createIntent(context, outputUri, false);
+        InAppCameraOptions options = new InAppCameraOptions.Builder(outputUri).build();
+        return createIntent(context, options);
     }
 
     @NonNull
-    public static Intent createIntent(@NonNull Context context, @NonNull Uri outputUri, boolean skipPreview) {
+    public static Intent createIntent(@NonNull Context context, @NonNull InAppCameraOptions options) {
         return new Intent(context, CameraActivity.class)
-                .putExtra(EXTRA_OUTPUT, outputUri)
-                .putExtra(EXTRA_SKIP_PREVIEW, skipPreview);
+                .putExtra(EXTRA_OPTIONS, options);
     }
 
     @NonNull
@@ -38,7 +38,7 @@ public class InAppCamera {
     }
 
     static String EXTRA_OUTPUT = "output";
-    static String EXTRA_SKIP_PREVIEW = "skipPreview";
+    static String EXTRA_OPTIONS = "options";
 
     static void log(String tag, Throwable t) {
         log(tag, "%s", Log.getStackTraceString(t));

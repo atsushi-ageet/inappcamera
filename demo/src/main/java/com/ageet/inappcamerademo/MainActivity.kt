@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.ageet.inappcamera.InAppCamera
+import com.ageet.inappcamera.InAppCameraOptions
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -23,7 +24,10 @@ class MainActivity : AppCompatActivity() {
     fun onCameraClick(view: View) {
         val file = createTempFile(prefix = "capture", directory = cacheDir)
         val uri = Uri.fromFile(file)
-        val intent = InAppCamera.createIntent(this, uri)
+        val options = InAppCameraOptions.Builder(uri)
+                .cameraOverlayViewLayoutId(R.layout.frame)
+                .build()
+        val intent = InAppCamera.createIntent(this, options)
         startActivityForResult(intent, 0)
     }
 

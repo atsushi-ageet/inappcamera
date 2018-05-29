@@ -22,7 +22,7 @@
 
     <ImageButton
         style="@style/InAppCamera_CircleButton.Capture"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_gravity="center_vertical|end"
         android:src="@drawable/inappcamera_ic_camera_white"
         android:onClick="onCaptureClick"
         android:contentDescription="@string/inappcamera_capture" />
