@@ -7,21 +7,31 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.wonderkiln.camerakit.Size;
+
 public class InAppCameraOptions implements Parcelable {
     private Uri outputUri;
     private boolean skipPreview;
     private int cameraOverlayViewLayoutId;
+    private Size maxSizeInPixel;
+    private int jpegQuality;
 
     private InAppCameraOptions(InAppCameraOptions.Builder builder) {
         outputUri = builder.outputUri;
         skipPreview = builder.skipPreview;
         cameraOverlayViewLayoutId = builder.cameraOverlayViewLayoutId;
+        maxSizeInPixel = builder.maxSizeInPixel;
+        jpegQuality = builder.jpegQuality;
     }
 
     private InAppCameraOptions(Parcel in) {
         outputUri = in.readParcelable(Uri.class.getClassLoader());
         skipPreview = in.readByte() != 0;
         cameraOverlayViewLayoutId = in.readInt();
+        maxSizeInPixel = new Size(
+                in.readInt(),
+                in.readInt());
+        jpegQuality = in.readInt();
     }
 
     public @NonNull Uri getOutputUri() {
@@ -36,11 +46,26 @@ public class InAppCameraOptions implements Parcelable {
         return cameraOverlayViewLayoutId;
     }
 
+    public Size getMaxSizeInPixel() {
+        return maxSizeInPixel;
+    }
+
+    public int getJpegQuality() {
+        return jpegQuality;
+    }
+
+    public boolean hasMaxSize() {
+        return maxSizeInPixel != null;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(outputUri, flags);
         dest.writeByte((byte) (skipPreview ? 1 : 0));
         dest.writeInt(cameraOverlayViewLayoutId);
+        dest.writeInt(maxSizeInPixel.getWidth());
+        dest.writeInt(maxSizeInPixel.getHeight());
+        dest.writeInt(jpegQuality);
     }
 
     @Override
@@ -64,6 +89,8 @@ public class InAppCameraOptions implements Parcelable {
         private Uri outputUri;
         private boolean skipPreview = false;
         private int cameraOverlayViewLayoutId = View.NO_ID;
+        private Size maxSizeInPixel;
+        private int jpegQuality = 100;
 
         public Builder(@NonNull Uri outputUri) {
             this.outputUri = outputUri;
@@ -76,6 +103,16 @@ public class InAppCameraOptions implements Parcelable {
 
         public Builder cameraOverlayViewLayoutId(@LayoutRes int cameraOverlayViewLayoutId) {
             this.cameraOverlayViewLayoutId = cameraOverlayViewLayoutId;
+            return this;
+        }
+
+        public Builder maxSizeInPixel(int width, int height) {
+            this.maxSizeInPixel = new Size(width, height);
+            return this;
+        }
+
+        public Builder jpegQuality(int jpegQuality) {
+            this.jpegQuality = jpegQuality;
             return this;
         }
 

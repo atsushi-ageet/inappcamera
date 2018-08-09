@@ -47,6 +47,9 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
             cameraOverlayViewStub.setLayoutResource(options.getCameraOverlayViewLayoutId());
             cameraOverlayViewStub.inflate();
         }
+        if (!options.hasMaxSize()) {
+            cameraView.setJpegQuality(options.getJpegQuality());
+        }
 
         byte[] jpeg = restoreJpeg();
         if (getSupportLoaderManager().getLoader(0) != null || jpeg != null) {
@@ -115,7 +118,7 @@ public class CameraActivity extends AppCompatActivity implements LoaderManager.L
         if (args != null) {
             data = args.getByteArray("data");
         }
-        return new SaveImageTaskLoader(this, data, options.getOutputUri());
+        return new SaveImageTaskLoader(this, data, options);
     }
 
     @Override

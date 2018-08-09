@@ -25,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         val file = createTempFile(prefix = "capture", directory = cacheDir)
         val uri = Uri.fromFile(file)
         val options = InAppCameraOptions.Builder(uri)
+                .jpegQuality(70)
+                .maxSizeInPixel(1000, 1000)
                 .cameraOverlayViewLayoutId(R.layout.frame)
                 .build()
         val intent = InAppCamera.createIntent(this, options)
